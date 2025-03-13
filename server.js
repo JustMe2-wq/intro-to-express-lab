@@ -20,7 +20,6 @@ app.get('/roll/:num', (req, res) => {
 });
 
 // Question 2://
-//I get a black screen for this one for some reason, doesn't make sense.
 
 const collectibles = [
     { name: 'shiny ball', price: 5.95 },
@@ -51,27 +50,36 @@ const shoes = [
     { name: "Fifty-Inch Heels", price: 175, type: "heel" }
 ];
 
-app.get('/shoes', (req, res) => { //
-    res.send(`I have ${req.query.type} in stock, for a price of ${req.query.price}!`);
+app.get('/shoes', (req, res) => {
+    const maxPrice = req.query.price;
+    const minPrice = req.query.price;
+    const type = req.query.type;
+    let filteredShoes = shoes;
+    if (maxPrice) {
+        filteredShoes = filteredShoes.filter(shoe => shoe.price <= Number(maxPrice));
+    }
+    if (minPrice) {
+        filteredShoes = filteredShoes.filter(shoe => shoe.price >= Number(minPrice));
+    }
+    if (type) {
+        filteredShoes = filteredShoes.filter(shoe => shoe.type === type);
+    }
+    res.send(filteredShoes);
 });
 
-// localhost:3000/hello?name=Christy&age=32
+// app.get('/shoes', (req, res) => {
+//     const {price, type} = req.query.price;
+//     let filteredShoes = shoes;
+//     if (price) {
+//         filteredShoes = filteredShoes.filter(shoe => shoe.price <= Number(price));
+//     }
+//     if (type) {
+//         filteredShoes = filteredShoes.filter(shoe => shoe.type = type);
+//     }
+//     res.send(filteredShoes);
+// });
 
-//app.get('/hello', (req, res) => {
-//    res.send(`Hello there, ${req.query.name}! I hear you are ${req.query.age} years old!`);
-//});
 
-
-//app.get('/collectibles/:num', (req, res) => {
-//    console.log(req.params.num);
-//    const num = Number(req.params.num);
-//    if (isNaN(num)) {
-//        res.send ('Provide number');
-//   } else {
-//       const random = Math.floor(Math.random() * num) + 1;
-//        res.send(`<h1> You collected ${random} coins </h1>`);
-//   }
-//});
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
